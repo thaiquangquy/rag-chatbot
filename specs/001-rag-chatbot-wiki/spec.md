@@ -104,6 +104,7 @@ Users ask questions that may not be in the wiki. The chatbot should handle these
 - How does the system behave when multiple documents contain contradictory information?
 - What is the behavior if source documents are deleted or moved in Google Drive?
 - How does the chatbot handle jargon or company-specific terminology?
+- How are credentials and keys managed over time? What is the plan for credential rotation, detection of compromised service account keys, emergency revocation, and automated recovery/fallback behavior?
 
 ## Requirements _(mandatory)_
 
@@ -125,6 +126,8 @@ Users ask questions that may not be in the wiki. The chatbot should handle these
 - **FR-009**: System MUST handle authentication for accessing Google Docs (OAuth2 or service account)
 - **FR-010**: Users MUST be able to ask follow-up questions in context (conversation history maintained)
 - **FR-011**: System MUST support document refresh/re-indexing when source documents are updated
+
+  - **FR-009-detail**: Authentication SHALL be implemented using a centrally managed service account with domain-wide delegation for company-managed documents; the system MUST support alternate OAuth2 per-user flows for private personal docs if explicitly permitted.
 
 ### Key Entities
 
@@ -178,3 +181,11 @@ Users ask questions that may not be in the wiki. The chatbot should handle these
 - Users have basic familiarity with chat interfaces (no special training required)
 - Initial knowledge base will be < 500MB of text content
 - Response time targets are based on standard commercial infrastructure (not edge computing constraints)
+
+## Clarifications
+
+### Session 2025-10-18
+
+- Q: Which authentication method should the ingestion service use to access Google Docs? → A: Service account with domain-wide delegation
+
+Notes: The ingestion service will authenticate using a centrally managed service account configured with domain-wide delegation (or appropriate IAM scope) so it can access company-managed Google Docs without per-user OAuth consent flows. This enables automated indexing, easier credential rotation, and centralized access control.
