@@ -127,6 +127,8 @@ Users ask questions that may not be in the wiki. The chatbot should handle these
 - **FR-010**: Users MUST be able to ask follow-up questions in context (conversation history maintained)
 - **FR-011**: System MUST support document refresh/re-indexing when source documents are updated
 
+- **FR-012**: System MUST enforce security controls for sensitive content: encryption-at-rest for stored documents and embeddings, IAM roles/policies for ingestion and access, audit logging of access and ingestion events, and an on‑prem option for documents flagged as highly sensitive.
+
   - **FR-009-detail**: Authentication SHALL be implemented using a centrally managed service account with domain-wide delegation for company-managed documents; the system MUST support alternate OAuth2 per-user flows for private personal docs if explicitly permitted.
 
 ### Key Entities
@@ -174,6 +176,8 @@ Users ask questions that may not be in the wiki. The chatbot should handle these
 - **SC-008**: Support tickets related to "how do I find X in the wiki" decrease by 60% post-launch
 - **SC-009**: First-time users can ask a question and get an answer without training (discoverability/UX success)
 
+- **SC-010**: Documents flagged as sensitive must be encrypted at rest and access requests audited; 100% of access events for sensitive documents must be logged and available for review within 24 hours.
+
 ## Assumptions
 
 - Google Docs API access is available and authenticated via OAuth2 or service account
@@ -189,3 +193,5 @@ Users ask questions that may not be in the wiki. The chatbot should handle these
 - Q: Which authentication method should the ingestion service use to access Google Docs? → A: Service account with domain-wide delegation
 
 Notes: The ingestion service will authenticate using a centrally managed service account configured with domain-wide delegation (or appropriate IAM scope) so it can access company-managed Google Docs without per-user OAuth consent flows. This enables automated indexing, easier credential rotation, and centralized access control.
+
+- Q: What is the expected security posture for document sensitivity and hosting? → A: C (May contain limited sensitive PII — cloud hosting allowed with encryption-at-rest, strict IAM, audit logging, and option for on-prem if needed)
