@@ -1,0 +1,25 @@
+# Ignore git metadata
+.git
+
+# Python caches
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node modules
+node_modules/
+
+# Logs and temp
+*.log
+*.tmp
+
+# Build artifacts
+build/
+dist/
+coverage/
+htmlcov/
+
+# Environment files
+.env
+.env.*

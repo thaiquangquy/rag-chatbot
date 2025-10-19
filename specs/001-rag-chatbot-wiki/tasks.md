@@ -4,55 +4,55 @@ This plan turns the spec and plan into concrete, independently testable tasks or
 
 ## Phase 1 — Setup (project initialization)
 
-- [ ] T001 [P] Create FastAPI app entrypoint in backend/src/api/main.py
-- [ ] T002 [P] Add application settings module in backend/src/config/settings.py
-- [ ] T003 [P] Create Python dependency manifest in backend/requirements.txt (pin FastAPI, Uvicorn, SQLAlchemy, psycopg, redis, openai, faiss-cpu, opentelemetry-api, opentelemetry-sdk, prometheus-client, pydantic-settings, python-dotenv, pytest, testcontainers)
-- [ ] T004 [P] Configure tooling in backend/pyproject.toml (ruff, black, pytest)
-- [ ] T005 [P] Add initial healthcheck test in backend/tests/unit/test_healthcheck.py
-- [ ] T006 [P] Add Docker Compose for Postgres and Redis in docker-compose.yml
-- [ ] T007 [P] Initialize React+TypeScript app in frontend/package.json (Vite + React)
-- [ ] T008 [P] Configure TS compiler options in frontend/tsconfig.json
-- [ ] T009 [P] Create frontend entry page in frontend/src/pages/index.tsx
-- [ ] T010 [P] Scaffold ChatWindow component in frontend/src/components/ChatWindow.tsx
-- [ ] T011 [P] Add OpenTelemetry setup in backend/src/observability/otel.py
-- [ ] T012 [P] Create API routes package init in backend/src/api/routes/**init**.py
+- [x] T001 [P] Create FastAPI app entrypoint in backend/src/api/main.py
+- [x] T002 [P] Add application settings module in backend/src/config/settings.py
+- [x] T003 [P] Create Python dependency manifest in backend/requirements.txt (pin FastAPI, Uvicorn, SQLAlchemy, psycopg, redis, openai, faiss-cpu, opentelemetry-api, opentelemetry-sdk, prometheus-client, pydantic-settings, python-dotenv, pytest, testcontainers)
+- [x] T004 [P] Configure tooling in backend/pyproject.toml (ruff, black, pytest)
+- [x] T005 [P] Add initial healthcheck test in backend/tests/unit/test_healthcheck.py
+- [x] T006 [P] Add Docker Compose for Postgres and Redis in docker-compose.yml
+- [x] T007 [P] Initialize React+TypeScript app in frontend/package.json (Vite + React)
+- [x] T008 [P] Configure TS compiler options in frontend/tsconfig.json
+- [x] T009 [P] Create frontend entry page in frontend/src/pages/index.tsx
+- [x] T010 [P] Scaffold ChatWindow component in frontend/src/components/ChatWindow.tsx
+- [x] T011 [P] Add OpenTelemetry setup in backend/src/observability/otel.py
+- [x] T012 [P] Create API routes package init in backend/src/api/routes/**init**.py
 
 ## Phase 2 — Foundational (blocking prerequisites)
 
-- [ ] T013 [P] Define ORM entities in backend/src/models/entities.py (Document, Section, Query, Response, Conversation)
-- [ ] T014 [P] Define API schemas in backend/src/models/schemas.py (Pydantic models)
-- [ ] T015 Create Alembic config in backend/alembic/env.py (database URL from settings)
-- [ ] T016 [P] Implement FAISS index wrapper in backend/src/vector/faiss_index.py
-- [ ] T017 [P] Implement Google Docs client in backend/src/integrations/google_docs_client.py (service account auth)
-- [ ] T018 [P] Implement API key auth middleware in backend/src/middleware/auth.py
-- [ ] T019 [P] Implement audit logging middleware in backend/src/middleware/audit.py (structured JSON)
-- [ ] T020 [P] Implement provider abstraction in backend/src/providers/llm_provider.py (OpenAI and Ollama adapters)
-- [ ] T021 [P] Add health endpoint in backend/src/api/routes/health.py and wire to main.py
-- [ ] T022 [P] Create text chunking utilities in backend/src/lib/chunking.py
-- [ ] T023 [P] Create embedding pipeline utilities in backend/src/lib/embedding.py
+- [x] T013 [P] Define ORM entities in backend/src/models/entities.py (Document, Section, Query, Response, Conversation)
+- [x] T014 [P] Define API schemas in backend/src/models/schemas.py (Pydantic models)
+- [x] T015 Create Alembic config in backend/alembic/env.py (database URL from settings)
+- [x] T016 [P] Implement FAISS index wrapper in backend/src/vector/faiss_index.py
+- [x] T017 [P] Implement Google Docs client in backend/src/integrations/google_docs_client.py (service account auth)
+- [x] T018 [P] Implement API key auth middleware in backend/src/middleware/auth.py
+- [x] T019 [P] Implement audit logging middleware in backend/src/middleware/audit.py (structured JSON)
+- [x] T020 [P] Implement provider abstraction in backend/src/providers/llm_provider.py (OpenAI and Ollama adapters)
+- [x] T021 [P] Add health endpoint in backend/src/api/routes/health.py and wire to main.py
+- [x] T022 [P] Create text chunking utilities in backend/src/lib/chunking.py
+- [x] T023 [P] Create embedding pipeline utilities in backend/src/lib/embedding.py
 
 ## Phase 3 — User Story 3: Multi-Document Context Ingestion (P1)
 
-- [ ] T024 [P] [US3] Add contract test for /ingest in backend/tests/contract/test_ingest_endpoint.py (accepts document_id, 202 + task_id)
-- [ ] T025 [US3] Implement ingestion service in backend/src/services/ingest_service.py (fetch, parse, chunk, persist)
-- [ ] T026 [US3] Implement /ingest route in backend/src/api/routes/ingest.py (enqueue background task)
-- [ ] T027 [P] [US3] Persist Document and Sections in backend/src/services/ingest_service.py (SQLAlchemy session)
-- [ ] T028 [P] [US3] Index sections in FAISS in backend/src/vector/faiss_index.py (upsert vectors)
+- [x] T024 [P] [US3] Add contract test for /ingest in backend/tests/contract/test_ingest_endpoint.py (accepts document_id, 202 + task_id)
+- [x] T025 [US3] Implement ingestion service in backend/src/services/ingest_service.py (fetch, parse, chunk, persist)
+- [x] T026 [US3] Implement /ingest route in backend/src/api/routes/ingest.py (enqueue background task)
+- [x] T027 [P] [US3] Persist Document and Sections in backend/src/services/ingest_service.py (SQLAlchemy session)
+- [x] T028 [P] [US3] Index sections in FAISS in backend/src/vector/faiss_index.py (upsert vectors)
 - [ ] T029 [US3] Implement refresh service in backend/src/services/refresh_service.py (re-index on update)
-- [ ] T030 [US3] Add ingestion→index integration test in backend/tests/integration/test_ingest_to_index.py
+- [x] T030 [US3] Add ingestion→index integration test in backend/tests/integration/test_ingest_to_index.py
 - [ ] T031 [P] [US3] Add admin CLI to trigger ingestion in backend/src/cli/ingest_cli.py
 
 ## Phase 4 — User Story 1: Quick Answer Lookup (P1)
 
-- [ ] T032 [P] [US1] Add contract test for /chat in backend/tests/contract/test_chat_endpoint.py (request query+session_id; returns generated_text)
-- [ ] T033 [US1] Implement retrieval service in backend/src/services/retrieval_service.py (query embed + top_k search)
-- [ ] T034 [US1] Implement answer synthesis service in backend/src/services/answer_service.py (LLM compose from sections)
-- [ ] T035 [US1] Implement /chat route in backend/src/api/routes/chat.py (wire services)
-- [ ] T036 [P] [US1] Implement frontend API client in frontend/src/services/api.ts (POST /chat)
-- [ ] T037 [P] [US1] Implement MessageList component in frontend/src/components/MessageList.tsx
-- [ ] T038 [P] [US1] Implement MessageInput component in frontend/src/components/MessageInput.tsx
-- [ ] T039 [US1] Wire ChatWindow to API in frontend/src/components/ChatWindow.tsx (send/receive stream or full response)
-- [ ] T040 [US1] Add chat flow integration test in backend/tests/integration/test_chat_flow.py
+- [x] T032 [P] [US1] Add contract test for /chat in backend/tests/contract/test_chat_endpoint.py (request query+session_id; returns generated_text)
+- [x] T033 [US1] Implement retrieval service in backend/src/services/retrieval_service.py (query embed + top_k search)
+- [x] T034 [US1] Implement answer synthesis service in backend/src/services/answer_service.py (LLM compose from sections)
+- [x] T035 [US1] Implement /chat route in backend/src/api/routes/chat.py (wire services)
+- [x] T036 [P] [US1] Implement frontend API client in frontend/src/services/api.ts (POST /chat)
+- [x] T037 [P] [US1] Implement MessageList component in frontend/src/components/MessageList.tsx
+- [x] T038 [P] [US1] Implement MessageInput component in frontend/src/components/MessageInput.tsx
+- [x] T039 [US1] Wire ChatWindow to API in frontend/src/components/ChatWindow.tsx (send/receive stream or full response)
+- [x] T040 [US1] Add chat flow integration test in backend/tests/integration/test_chat_flow.py
 
 ## Phase 5 — User Story 2: Source Attribution & Verification (P1)
 
