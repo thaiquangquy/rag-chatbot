@@ -5,7 +5,10 @@ from typing import Optional
 
 from sqlalchemy import JSON, Boolean, Column, DateTime, Enum, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import declarative_base, relationship
+from datetime import datetime, timezone
 
+def utcnow() -> datetime:
+    return datetime.now(timezone.utc)
 
 Base = declarative_base()
 
@@ -18,8 +21,8 @@ class Document(Base):
     url = Column(String, nullable=False)
     mime_type = Column(String, nullable=False)
     owner = Column(String, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utcnow, nullable=False)
+    updated_at = Column(DateTime, default=utcnow, onupdate=utcnow, nullable=False)
     last_indexed = Column(DateTime, nullable=True)
     content_hash = Column(String, nullable=False)
     size_bytes = Column(Integer, nullable=True)

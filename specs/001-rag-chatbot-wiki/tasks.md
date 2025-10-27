@@ -38,9 +38,9 @@ This plan turns the spec and plan into concrete, independently testable tasks or
 - [x] T026 [US3] Implement /ingest route in backend/src/api/routes/ingest.py (enqueue background task)
 - [x] T027 [P] [US3] Persist Document and Sections in backend/src/services/ingest_service.py (SQLAlchemy session)
 - [x] T028 [P] [US3] Index sections in FAISS in backend/src/vector/faiss_index.py (upsert vectors)
-- [ ] T029 [US3] Implement refresh service in backend/src/services/refresh_service.py (re-index on update)
+- [x] T029 [US3] Implement refresh service in backend/src/services/refresh_service.py (re-index on update)
 - [x] T030 [US3] Add ingestion→index integration test in backend/tests/integration/test_ingest_to_index.py
-- [ ] T031 [P] [US3] Add admin CLI to trigger ingestion in backend/src/cli/ingest_cli.py
+- [x] T031 [P] [US3] Add admin CLI to trigger ingestion in backend/src/cli/ingest_cli.py
 
 ## Phase 4 — User Story 1: Quick Answer Lookup (P1)
 
