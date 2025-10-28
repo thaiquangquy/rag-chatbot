@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-
 from backend.src.middleware.auth import api_key_guard
 from backend.src.models.schemas import ChatRequest, ChatResponse, SectionSource
 from backend.src.services.answer_service import AnswerService
 from backend.src.services.retrieval_service import RetrievalService
+from backend.src.utils.source_link import build_source_link
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 router = APIRouter(dependencies=[Depends(api_key_guard)])
 
@@ -39,7 +39,7 @@ def chat(
             document_id=section.document_id,
             section_id=section.section_id,
             snippet=section.content[:200],
-            url=section.document.url if section.document else "",
+            url=build_source_link(section),
         )
         for section in sections
     ]

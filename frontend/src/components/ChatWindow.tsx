@@ -2,33 +2,67 @@ import { useState } from "react";
 
 import { MessageInput } from "./MessageInput";
 import { MessageList } from "./MessageList";
+import { chat } from "../services/api";
+import { Source } from "./SourceList";
 
 interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
+  sources?: Source[];
 }
 
 export function ChatWindow() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [sessionId] = useState(() => crypto.randomUUID());
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSend = () => {
-    if (!input.trim()) {
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) {
       return;
     }
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { id: crypto.randomUUID(), role: "user", content: input },
-      { id: crypto.randomUUID(), role: "assistant", content: "Coming soon" },
-    ]);
+
+    const userMessage: Message = {
+      id: crypto.randomUUID(),
+      role: "user",
+      content: input,
+    };
+
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInput("");
+    setIsLoading(true);
+
+    try {
+      const response = await chat(input, sessionId);
+      const assistantMessage: Message = {
+        id: response.response_id,
+        role: "assistant",
+        content: response.generated_text,
+        sources: response.sources,
+      };
+      setMessages((prevMessages) => [...prevMessages, assistantMessage]);
+    } catch (error) {
+      const errorMessage: Message = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: "Sorry, an error occurred. Please try again.",
+      };
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div>
       <MessageList messages={messages} />
-      <MessageInput value={input} onChange={setInput} onSend={handleSend} />
+      <MessageInput
+        value={input}
+        onChange={setInput}
+        onSend={handleSend}
+        disabled={isLoading}
+      />
     </div>
   );
 }
