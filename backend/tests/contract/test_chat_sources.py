@@ -1,11 +1,10 @@
 """Contract test for chat endpoint with source attribution."""
 
 import pytest
-from fastapi.testclient import TestClient
-
 from backend.src.api.main import app
 from backend.src.api.routes import chat as chat_route
 from backend.src.models.entities import Document, Section
+from fastapi.testclient import TestClient
 
 
 class FakeRetrievalService:
