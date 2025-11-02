@@ -5,6 +5,8 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   sources?: Source[];
+  isFallback?: boolean;
+  relatedTopics?: string[];
 }
 
 interface MessageListProps {
@@ -22,6 +24,19 @@ export function MessageList({ messages }: MessageListProps) {
           {message.role === "assistant" && message.sources && (
             <SourceList sources={message.sources} />
           )}
+          {message.role === "assistant" &&
+            message.isFallback &&
+            message.relatedTopics &&
+            message.relatedTopics.length > 0 && (
+              <div className="related-topics">
+                <p>Related topics you can explore:</p>
+                <ul>
+                  {message.relatedTopics.map((topic) => (
+                    <li key={topic}>{topic}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
         </div>
       ))}
     </div>

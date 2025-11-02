@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import cast
+
 from backend.src.models.entities import Section
 from backend.src.pipelines.rerank import (
     ScoredSection,
@@ -135,7 +137,7 @@ class TestRerankSections:
         )
         result = rerank_sections([section], "python", [0.8])
         assert len(result) == 1
-        assert result[0].section_id == "s1"
+        assert cast(str, result[0].section_id) == "s1"
 
     def test_rerank_by_keyword_boost(self) -> None:
         """Test that keyword matching boosts rankings."""
@@ -153,7 +155,7 @@ class TestRerankSections:
         )
         
         # s1 should rank higher due to keyword match
-        assert result[0].section_id == "s1"
+        assert cast(str, result[0].section_id) == "s1"
 
     def test_top_k_limit(self) -> None:
         """Test that top_k limits results."""
@@ -193,8 +195,8 @@ class TestFilterLowRelevance:
         
         filtered_sections, filtered_scores = filter_low_relevance(sections, scores, min_score=0.5)
         assert len(filtered_sections) == 2
-        assert filtered_sections[0].section_id == "s1"
-        assert filtered_sections[1].section_id == "s3"
+        assert cast(str, filtered_sections[0].section_id) == "s1"
+        assert cast(str, filtered_sections[1].section_id) == "s3"
         assert filtered_scores == [0.8, 0.6]
 
     def test_all_below_threshold(self) -> None:
@@ -246,15 +248,39 @@ class TestAmbiguityDetection:
     def test_ambiguous_query_with_no_sections_returns_clarification(self) -> None:
         """Test that ambiguous queries with no context get clarification."""
         service = AnswerService()
-        response_id, generated = service.answer("what", [])
-        assert "details" in generated.lower() or "clarif" in generated.lower()
+        result = service.answer("what", [])
+        assert "details" in result.generated_text.lower() or "clarif" in result.generated_text.lower()
+        assert result.is_fallback is False
 
     def test_specific_query_generates_normal_answer(self) -> None:
         """Test that specific queries generate normal answers."""
         service = AnswerService()
-        response_id, generated = service.answer(
+        result = service.answer(
             "how do I reset my password",
-            ["You can reset your password in the settings page."]
+            [
+                "You can reset your password in the settings page. Navigate to the security tab "
+                "and follow the on-screen prompts to confirm the change."
+            ]
         )
         # Should not be a clarifying prompt
-        assert "could you please provide more details" not in generated.lower()
+        assert "could you please provide more details" not in result.generated_text.lower()
+        assert result.is_fallback is False
+
+
+class TestFallbackPolicy:
+    """Tests for fallback behaviour in AnswerService."""
+
+    def test_no_sections_triggers_fallback(self) -> None:
+        """Ensure fallback is returned when no context is available."""
+        service = AnswerService()
+        result = service.answer("Explain upstream latency budget", [])
+        assert result.is_fallback is True
+        assert "couldn't find" in result.generated_text.lower() or "no relevant" in result.generated_text.lower()
+
+    def test_short_context_triggers_fallback(self) -> None:
+        """Short responses should trigger fallback message."""
+        service = AnswerService(min_context_chars=50)
+        context = ["tiny"]
+        result = service.answer("Explain upstream latency budget", context)
+        assert result.is_fallback is True
+        assert len(result.generated_text) > 0

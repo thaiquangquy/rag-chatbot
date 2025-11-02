@@ -2,6 +2,7 @@ from fastapi.testclient import TestClient
 
 from backend.src.api.main import app
 from backend.src.api.routes import chat as chat_route
+from backend.src.services.answer_service import AnswerResult
 
 
 class FakeRetrievalService:
@@ -18,7 +19,11 @@ class FakeRetrievalService:
 
 class FakeAnswerService:
     def answer(self, question: str, sections: list[str]):
-        return ("resp-1", "Answer content")
+        return AnswerResult(
+            response_id="resp-1",
+            generated_text="Answer content",
+            is_fallback=False,
+        )
 
 
 def override_retrieval():
@@ -41,3 +46,5 @@ def test_chat_returns_generated_text():
     assert body["response_id"] == "resp-1"
     assert body["generated_text"] == "Answer content"
     assert body["sources"]
+    assert body["is_fallback"] is False
+    assert body["related_topics"] == []

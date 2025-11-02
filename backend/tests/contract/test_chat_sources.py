@@ -5,6 +5,7 @@ from backend.src.api.main import app
 from backend.src.api.routes import chat as chat_route
 from backend.src.models.entities import Document, Section
 from fastapi.testclient import TestClient
+from backend.src.services.answer_service import AnswerResult
 
 
 class FakeRetrievalService:
@@ -21,7 +22,11 @@ class FakeAnswerService:
     """Fake answer service for testing."""
 
     def answer(self, question: str, sections):
-        return ("resp-123", "Test answer from sections.")
+        return AnswerResult(
+            response_id="resp-123",
+            generated_text="Test answer from sections.",
+            is_fallback=False,
+        )
 
 
 @pytest.fixture
@@ -82,6 +87,9 @@ def test_chat_response_includes_sources(mock_section, override_dependencies):
     assert "response_id" in data
     assert "generated_text" in data
     assert "sources" in data
+    assert "is_fallback" in data
+    assert data["is_fallback"] is False
+    assert data.get("related_topics") == []
 
     # Check sources
     assert len(data["sources"]) > 0
@@ -122,6 +130,8 @@ def test_chat_sources_are_clickable_urls(mock_section, override_dependencies):
         url = source["url"]
         assert url.startswith("http://") or url.startswith("https://")
         assert len(url) > 0
+    assert data["is_fallback"] is False
+    assert data["related_topics"] == []
 
 
 def test_chat_multiple_sources(mock_section, override_dependencies):
@@ -163,6 +173,8 @@ def test_chat_multiple_sources(mock_section, override_dependencies):
 
     # Should have two sources
     assert len(data["sources"]) == 2
+    assert data["is_fallback"] is False
+    assert data["related_topics"] == []
 
     # Verify both sources have proper structure
     for source in data["sources"]:

@@ -10,6 +10,8 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   sources?: Source[];
+  isFallback?: boolean;
+  relatedTopics?: string[];
 }
 
 export function ChatWindow() {
@@ -40,6 +42,8 @@ export function ChatWindow() {
         role: "assistant",
         content: response.generated_text,
         sources: response.sources,
+        isFallback: response.is_fallback,
+        relatedTopics: response.related_topics,
       };
       setMessages((prevMessages) => [...prevMessages, assistantMessage]);
     } catch (error) {

@@ -74,6 +74,12 @@ paths:
                           type: string
                         snippet:
                           type: string
+                  is_fallback:
+                    type: boolean
+                  related_topics:
+                    type: array
+                    items:
+                      type: string
 security:
   - apiKey: []
 components:

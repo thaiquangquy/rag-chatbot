@@ -56,25 +56,25 @@ This plan turns the spec and plan into concrete, independently testable tasks or
 
 ## Phase 5 — User Story 2: Source Attribution & Verification (P1)
 
-- [ ] T041 [P] [US2] Implement source link builder in backend/src/utils/source_link.py (Google Docs section/heading links)
-- [ ] T042 [US2] Include sources in retrieval results in backend/src/services/retrieval_service.py (section_id, document_id, snippet, url)
-- [ ] T043 [US2] Update response schema with sources in backend/src/models/schemas.py
-- [ ] T044 [P] [US2] Implement SourceList component in frontend/src/components/SourceList.tsx
-- [ ] T045 [US2] Render sources in ChatWindow in frontend/src/components/ChatWindow.tsx (clickable links)
-- [ ] T046 [US2] Add contract test for sources in backend/tests/contract/test_chat_sources.py
+- [x] T041 [P] [US2] Implement source link builder in backend/src/utils/source_link.py (Google Docs section/heading links)
+- [x] T042 [US2] Include sources in retrieval results in backend/src/services/retrieval_service.py (section_id, document_id, snippet, url)
+- [x] T043 [US2] Update response schema with sources in backend/src/models/schemas.py
+- [x] T044 [P] [US2] Implement SourceList component in frontend/src/components/SourceList.tsx
+- [x] T045 [US2] Render sources in ChatWindow in frontend/src/components/ChatWindow.tsx (clickable links)
+- [x] T046 [US2] Add contract test for sources in backend/tests/contract/test_chat_sources.py
 
 ## Phase 6 — User Story 4: Contextual Relevance & Answer Quality (P2)
 
-- [ ] T047 [P] [US4] Implement re-ranking heuristics in backend/src/pipelines/rerank.py (score combiner/filters)
-- [ ] T048 [US4] Add ambiguity detection and clarify prompts in backend/src/services/answer_service.py
-- [ ] T049 [US4] Add relevance unit tests in backend/tests/unit/test_relevance.py
+- [x] T047 [P] [US4] Implement re-ranking heuristics in backend/src/pipelines/rerank.py (score combiner/filters)
+- [x] T048 [US4] Add ambiguity detection and clarify prompts in backend/src/services/answer_service.py
+- [x] T049 [US4] Add relevance unit tests in backend/tests/unit/test_relevance.py
 
 ## Phase 7 — User Story 5: Fallback for Unanswered Questions (P2)
 
-- [ ] T050 [US5] Implement no-answer threshold policy in backend/src/services/answer_service.py
-- [ ] T051 [P] [US5] Implement related topics suggester in backend/src/services/suggest_service.py
-- [ ] T052 [US5] Render fallback UX in frontend/src/components/ChatWindow.tsx (clear message)
-- [ ] T053 [US5] Add fallback contract test in backend/tests/contract/test_chat_fallback.py
+- [x] T050 [US5] Implement no-answer threshold policy in backend/src/services/answer_service.py
+- [x] T051 [P] [US5] Implement related topics suggester in backend/src/services/suggest_service.py
+- [x] T052 [US5] Render fallback UX in frontend/src/components/ChatWindow.tsx (clear message)
+- [x] T053 [US5] Add fallback contract test in backend/tests/contract/test_chat_fallback.py
 
 ## Final Phase — Polish & Cross-Cutting
 

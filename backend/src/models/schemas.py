@@ -23,6 +23,8 @@ class ChatResponse(BaseModel):
     response_id: str
     generated_text: str
     sources: Sequence[SectionSource]
+    is_fallback: bool = False
+    related_topics: Sequence[str] = Field(default_factory=list)
 
 
 class IngestRequest(BaseModel):

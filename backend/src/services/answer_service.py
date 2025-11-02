@@ -2,15 +2,32 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 import re
 import uuid
 
 from backend.src.providers.llm_provider import ChatProvider, StubProvider
 
 
+@dataclass
+class AnswerResult:
+    """Structured result returned by the answer service."""
+
+    response_id: str
+    generated_text: str
+    is_fallback: bool = False
+    clarification_required: bool = False
+
+
 class AnswerService:
-    def __init__(self, provider: ChatProvider | None = None) -> None:
+    def __init__(
+        self,
+        provider: ChatProvider | None = None,
+        *,
+    min_context_chars: int = 80,
+    ) -> None:
         self.provider = provider or StubProvider()
+        self.min_context_chars = min_context_chars
 
     def is_ambiguous(self, question: str) -> bool:
         """
@@ -83,7 +100,25 @@ class AnswerService:
             "- Are you looking for step-by-step instructions or conceptual information?"
         )
 
-    def answer(self, question: str, sections: list[str]) -> tuple[str, str]:
+    def has_sufficient_context(self, sections: list[str]) -> bool:
+        """Determine if retrieved sections provide enough context."""
+
+        if not sections:
+            return False
+
+        total_chars = sum(len(section.strip()) for section in sections if section)
+        return total_chars >= self.min_context_chars
+
+    def build_fallback_message(self, question: str) -> str:
+        """Generate a user-facing fallback message."""
+
+        return (
+            "I'm sorry, I couldn't find enough information in the knowledge base "
+            f"to answer '{question}'. Please try rephrasing your question or explore "
+            "the related topics below."
+        )
+
+    def answer(self, question: str, sections: list[str]) -> AnswerResult:
         """
         Generate an answer from retrieved sections, with ambiguity detection.
         
@@ -92,14 +127,26 @@ class AnswerService:
             sections: Retrieved section contents
             
         Returns:
-            Tuple of (response_id, generated_text)
+            Structured answer result including fallback status
         """
         # Check for ambiguity
         if self.is_ambiguous(question):
             # If no good context found, ask for clarification
             if not sections:
                 clarifying_prompt = self.generate_clarifying_prompt(question)
-                return str(uuid.uuid4()), clarifying_prompt
+                return AnswerResult(
+                    response_id=str(uuid.uuid4()),
+                    generated_text=clarifying_prompt,
+                    clarification_required=True,
+                )
+
+        if not self.has_sufficient_context(sections):
+            fallback_message = self.build_fallback_message(question)
+            return AnswerResult(
+                response_id=str(uuid.uuid4()),
+                generated_text=fallback_message,
+                is_fallback=True,
+            )
         
         # Build context and generate answer
         context = "\n".join(sections)
@@ -118,4 +165,7 @@ class AnswerService:
         )
         
         generated = self.provider.generate(prompt)
-        return str(uuid.uuid4()), generated
+        return AnswerResult(
+            response_id=str(uuid.uuid4()),
+            generated_text=generated,
+        )

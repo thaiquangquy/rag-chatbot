@@ -9,6 +9,8 @@ export interface ChatResponse {
   response_id: string;
   generated_text: string;
   sources: Source[];
+  is_fallback: boolean;
+  related_topics: string[];
 }
 
 export async function chat(
