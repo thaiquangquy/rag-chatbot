@@ -67,7 +67,8 @@ def compute_diversity_score(section_content: str, already_selected: list[str]) -
             overlaps.append(0.0)
         else:
             overlap = len(section_terms & selected_terms)
-            overlaps.append(overlap / max(len(section_terms), len(selected_terms)))
+            max_terms = max(len(section_terms), len(selected_terms))
+            overlaps.append(overlap / max_terms if max_terms > 0 else 0.0)
     
     # Higher diversity when overlap is lower
     avg_overlap = sum(overlaps) / len(overlaps) if overlaps else 0.0

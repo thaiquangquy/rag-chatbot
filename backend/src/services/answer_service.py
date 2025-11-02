@@ -97,7 +97,7 @@ class AnswerService:
         # Check for ambiguity
         if self.is_ambiguous(question):
             # If no good context found, ask for clarification
-            if not sections or len(sections) == 0:
+            if not sections:
                 clarifying_prompt = self.generate_clarifying_prompt(question)
                 return str(uuid.uuid4()), clarifying_prompt
         
