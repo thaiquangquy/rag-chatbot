@@ -2,23 +2,32 @@
 
 from __future__ import annotations
 
+from typing import Iterator
+
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from backend.src.cli.ingest_cli import session_scope
 from backend.src.middleware.auth import api_key_guard
 from backend.src.models.schemas import ChatRequest, ChatResponse, SectionSource
 from backend.src.services.answer_service import AnswerService
 from backend.src.services.retrieval_service import RetrievalService
 from backend.src.utils.source_link import build_source_link
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from backend.src.vector.faiss_index import VectorIndex
 
 router = APIRouter(dependencies=[Depends(api_key_guard)])
 
-
-def get_db() -> Session:
-    raise NotImplementedError("Database session dependency not yet wired")
+_vector_index = VectorIndex()
 
 
-def get_retrieval_service() -> RetrievalService:
-    raise NotImplementedError
+def get_db() -> Iterator[Session]:
+    """Yield a database session for FastAPI dependency injection."""
+    with session_scope() as session:
+        yield session
+
+
+def get_retrieval_service(db: Session = Depends(get_db)) -> RetrievalService:
+    return RetrievalService(db=db, vector_index=_vector_index)
 
 
 def get_answer_service() -> AnswerService:

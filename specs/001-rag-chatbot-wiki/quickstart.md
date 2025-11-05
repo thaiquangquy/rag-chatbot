@@ -24,12 +24,16 @@ docker compose up -d
 
 ```powershell
 python -m rag_chatbot.ingest --document-id="<DOC_ID>" --service-account=secrets/service_account.json
+
+py -m backend.src.cli.ingest_cli ingest "1GtNxpX3NYntobPpp8j2YJyeecbKsbTrdtDBzUgL6lsg" --source "https://docs.google.com/document/d/1GtNxpX3NYntobPpp8j2YJyeecbKsbTrdtDBzUgL6lsg/edit?tab=t.0"
 ```
 
 4. Run the API server
 
 ```powershell
 uvicorn rag_chatbot.api:app --reload --port 8000
+
+uvicorn backend.src.api.main:app --reload --port 8080
 ```
 
 5. Open the chat UI (frontend)

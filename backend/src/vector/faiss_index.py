@@ -7,11 +7,12 @@ from typing import Sequence
 import faiss
 import numpy as np
 
+DEFAULT_EMBEDDING_DIMENSION = 1536
 
 class VectorIndex:
     """Wrap FAISS index for cosine similarity search."""
 
-    def __init__(self, dimension: int) -> None:
+    def __init__(self, dimension: int = DEFAULT_EMBEDDING_DIMENSION) -> None:
         self.dimension = dimension
         self.index = faiss.IndexFlatIP(dimension)
         self.ids: list[str] = []

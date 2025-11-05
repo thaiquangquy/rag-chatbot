@@ -11,4 +11,11 @@ class GoogleDocsClient:
 
     def fetch_document(self, document_id: str) -> dict[str, Any]:
         """Placeholder fetch, returns dummy structure until API integrated."""
+        return {
+            "title": "Sample Doc",
+            "content": "Your test content...",
+            "mime_type": "text/plain",
+            "owner": "you@example.com",
+            "content_hash": "abc123",
+        }
         raise NotImplementedError("Google Docs API integration pending")
