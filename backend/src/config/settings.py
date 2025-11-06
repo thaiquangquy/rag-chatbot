@@ -13,7 +13,11 @@ class Settings(BaseSettings):
     openai_api_key: str | None = None
     ollama_base_url: str | None = None
     service_account_path: str | None = None
-    embedding_provider: str = "openai"
+    embedding_provider: str = "lm_studio"
+    embedding_dimension: int = 768
+    lm_studio_base_url: str = "http://localhost:1234/v1"
+    lm_studio_embedding_model: str = "text-embedding-nomic-embed-text-v1.5"
+    lm_studio_timeout_seconds: float = 30.0
 
 
 @lru_cache

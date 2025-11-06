@@ -16,8 +16,6 @@ from backend.src.services.ingest_service import IngestService
 from backend.src.services.refresh_service import RefreshService
 from backend.src.vector.faiss_index import VectorIndex
 
-EMBEDDING_DIMENSION = 1536
-
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Trigger ingestion jobs")
@@ -38,7 +36,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def build_dependencies() -> tuple[GoogleDocsClient, VectorIndex]:
     settings = get_settings()
     docs_client = GoogleDocsClient(settings.service_account_path)
-    vector_index = VectorIndex(EMBEDDING_DIMENSION)
+    vector_index = VectorIndex(settings.embedding_dimension)
     return docs_client, vector_index
 
 

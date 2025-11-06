@@ -13,7 +13,7 @@ class GoogleDocsClient:
         """Placeholder fetch, returns dummy structure until API integrated."""
         return {
             "title": "Sample Doc",
-            "content": "Your test content...",
+            "content": "Fullname: Thai Quang Quy\nDate of birth: 01/08/1993\n",
             "mime_type": "text/plain",
             "owner": "you@example.com",
             "content_hash": "abc123",

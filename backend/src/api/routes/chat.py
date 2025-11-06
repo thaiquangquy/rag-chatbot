@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from backend.src.cli.ingest_cli import session_scope
+from backend.src.config.settings import get_settings
 from backend.src.middleware.auth import api_key_guard
 from backend.src.models.schemas import ChatRequest, ChatResponse, SectionSource
 from backend.src.services.answer_service import AnswerService
@@ -17,7 +18,8 @@ from backend.src.vector.faiss_index import VectorIndex
 
 router = APIRouter(dependencies=[Depends(api_key_guard)])
 
-_vector_index = VectorIndex()
+_settings = get_settings()
+_vector_index = VectorIndex(_settings.embedding_dimension)
 
 
 def get_db() -> Iterator[Session]:
