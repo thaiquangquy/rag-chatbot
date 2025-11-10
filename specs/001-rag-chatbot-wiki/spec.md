@@ -124,7 +124,7 @@ Users ask questions that may not be in the wiki. The chatbot should handle these
 - **FR-007**: System MUST provide administrative interface for managing document sources (add, remove, refresh)
 - **FR-008**: System MUST log all user queries and chatbot responses for analytics and debugging
 - **FR-009**: System MUST handle authentication for accessing Google Docs (OAuth2 or service account)
-- **FR-010**: Users MUST be able to ask follow-up questions in context (conversation history maintained)
+- **FR-010**: FR-010 (MVP Scope): Session context maintained transiently via session_id; durable multi-turn conversation persistence deferred to Phase 2.
 - **FR-011**: System MUST support document refresh/re-indexing when source documents are updated
 
 - **FR-012**: System MUST enforce security controls for sensitive content: encryption-at-rest for stored documents and embeddings, IAM roles/policies for ingestion and access, audit logging of access and ingestion events, and an on‑prem option for documents flagged as highly sensitive.

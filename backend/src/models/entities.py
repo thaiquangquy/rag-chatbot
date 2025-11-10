@@ -1,83 +1,84 @@
 """SQLAlchemy ORM models for RAG chatbot."""
 
 from datetime import datetime
-from typing import Optional
+from typing import Any, List, Optional
 
 from sqlalchemy import JSON, Boolean, Column, DateTime, Enum, ForeignKey, Integer, String, Text
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from datetime import datetime, timezone
 
 def utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 
 class Document(Base):
     __tablename__ = "documents"
 
-    document_id = Column(String, primary_key=True)
-    title = Column(String, nullable=False)
-    url = Column(String, nullable=False)
-    mime_type = Column(String, nullable=False)
-    owner = Column(String, nullable=True)
-    created_at = Column(DateTime, default=utcnow, nullable=False)
-    updated_at = Column(DateTime, default=utcnow, onupdate=utcnow, nullable=False)
-    last_indexed = Column(DateTime, nullable=True)
-    content_hash = Column(String, nullable=False)
-    size_bytes = Column(Integer, nullable=True)
-    ingestion_status = Column(Enum("pending", "succeeded", "failed", name="ingestion_status"), nullable=False)
-    extra_metadata = Column(JSON, nullable=True)
+    document_id: Mapped[str] = mapped_column(String, primary_key=True)
+    title: Mapped[str] = mapped_column(String, nullable=False)
+    url: Mapped[str] = mapped_column(String, nullable=False)
+    mime_type: Mapped[str] = mapped_column(String, nullable=False)
+    owner: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow, nullable=False)
+    last_indexed: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    content_hash: Mapped[str] = mapped_column(String, nullable=False)
+    size_bytes: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    ingestion_status: Mapped[str] = mapped_column(Enum("pending", "succeeded", "failed", name="ingestion_status"), nullable=False)
+    extra_metadata: Mapped[Optional[Any]] = mapped_column(JSON, nullable=True)
 
-    sections = relationship("Section", back_populates="document", cascade="all, delete-orphan")
+    sections: Mapped[List["Section"]] = relationship("Section", back_populates="document", cascade="all, delete-orphan")
 
 
 class Section(Base):
     __tablename__ = "sections"
 
-    section_id = Column(String, primary_key=True)
-    document_id = Column(String, ForeignKey("documents.document_id"), nullable=False)
-    title = Column(String, nullable=True)
-    content = Column(Text, nullable=False)
-    char_offset_start = Column(Integer, nullable=True)
-    char_offset_end = Column(Integer, nullable=True)
-    embedding_id = Column(String, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    section_id: Mapped[str] = mapped_column(String, primary_key=True)
+    document_id: Mapped[str] = mapped_column(String, ForeignKey("documents.document_id"), nullable=False)
+    title: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    char_offset_start: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    char_offset_end: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    embedding_id: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
-    document = relationship("Document", back_populates="sections")
+    document: Mapped["Document"] = relationship("Document", back_populates="sections")
 
 
 class Conversation(Base):
     __tablename__ = "conversations"
 
-    conversation_id = Column(String, primary_key=True)
-    user_id = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    last_active_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    conversation_id: Mapped[str] = mapped_column(String, primary_key=True)
+    user_id: Mapped[str] = mapped_column(String, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    last_active_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
 
 class Query(Base):
     __tablename__ = "queries"
 
-    query_id = Column(String, primary_key=True)
-    user_id = Column(String, nullable=False)
-    text = Column(Text, nullable=False)
-    session_id = Column(String, nullable=False)
-    embedding_id = Column(String, nullable=True)
-    timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
-    conversation_id = Column(String, ForeignKey("conversations.conversation_id"))
+    query_id: Mapped[str] = mapped_column(String, primary_key=True)
+    user_id: Mapped[str] = mapped_column(String, nullable=False)
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    session_id: Mapped[str] = mapped_column(String, nullable=False)
+    embedding_id: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    timestamp: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    conversation_id: Mapped[Optional[str]] = mapped_column(String, ForeignKey("conversations.conversation_id"))
 
-    conversation = relationship("Conversation")
+    conversation: Mapped[Optional["Conversation"]] = relationship("Conversation")
 
 
 class Response(Base):
     __tablename__ = "responses"
 
-    response_id = Column(String, primary_key=True)
-    query_id = Column(String, ForeignKey("queries.query_id"), nullable=False)
-    generated_text = Column(Text, nullable=False)
-    source_sections = Column(JSON, nullable=False, default=list)
-    confidence_score = Column(Integer, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    response_id: Mapped[str] = mapped_column(String, primary_key=True)
+    query_id: Mapped[str] = mapped_column(String, ForeignKey("queries.query_id"), nullable=False)
+    generated_text: Mapped[str] = mapped_column(Text, nullable=False)
+    source_sections: Mapped[Any] = mapped_column(JSON, nullable=False, default=list)
+    confidence_score: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
-    query = relationship("Query")
+    query: Mapped["Query"] = relationship("Query")

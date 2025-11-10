@@ -28,7 +28,9 @@ def get_db() -> Iterator[Session]:
 def get_ingest_service(db: Session = Depends(get_db)) -> IngestService:
     docs_client = GoogleDocsClient(_settings.service_account_path)
     vector_index = VectorIndex(_settings.embedding_dimension)
-    return IngestService(db=db, docs_client=docs_client, vector_index=vector_index)
+    # Load existing index from disk if available
+    vector_index.load(_settings.faiss_index_path)
+    return IngestService(db=db, docs_client=docs_client, vector_index=vector_index, index_path=_settings.faiss_index_path)
 
 
 @router.post("/ingest", response_model=IngestResponse, status_code=status.HTTP_202_ACCEPTED)

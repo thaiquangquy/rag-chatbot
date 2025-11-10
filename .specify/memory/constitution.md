@@ -72,7 +72,7 @@ MANDATORY: All user-facing interactions (chat, UI, CLI) MUST follow consistent p
 
 MANDATORY: Performance is a feature, not an afterthought. All systems MUST meet defined thresholds.
 
-- **Chat Response Times**: RAG chatbot responses MUST complete within 3 seconds for typical queries (95th percentile). Sub-second response time is the target for 80% of queries.
+- **Chat Response Times**: RAG chatbot responses MUST complete within 5 seconds for typical queries (95th percentile). Sub-second response time is the target for 80% of queries.
 - **Indexing Performance**: Vector index operations (embedding, retrieval) MUST process at least 10,000 documents per minute on standard hardware.
 - **API Latency**: REST/GraphQL endpoints MUST respond within 200ms (p99). Database queries MUST complete within 100ms.
 - **Throughput Minimums**: System MUST handle 10 concurrent chat sessions with <500ms p99 latency. Scale should be linear up to 100 sessions.

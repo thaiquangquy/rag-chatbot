@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import uuid
-from typing import Any, Sequence, cast
+from typing import Sequence
 
 from sqlalchemy.orm import Session
 
@@ -22,10 +22,12 @@ class RefreshService:
         db: Session,
         docs_client: GoogleDocsClient,
         vector_index: VectorIndex,
+        index_path: str | None = None,
     ) -> None:
         self.db = db
         self.docs_client = docs_client
         self.vector_index = vector_index
+        self.index_path = index_path
 
     def refresh(self, document_id: str, *, source_url: str, force: bool = False) -> str:
         document_data = self.docs_client.fetch_document(document_id)
@@ -33,7 +35,6 @@ class RefreshService:
         new_hash = document_data.get("content_hash", "")
 
         document = self.db.get(entities.Document, document_id)
-        document = cast(Any, document)
         if document and document.content_hash == new_hash and not force:
             return str(uuid.uuid4())
 
@@ -87,4 +88,9 @@ class RefreshService:
             document.size_bytes = len(content.encode("utf-8"))
 
         self.db.commit()
+        
+        # Persist the index to disk if path is configured
+        if self.index_path:
+            self.vector_index.save(self.index_path)
+        
         return str(uuid.uuid4())

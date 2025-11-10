@@ -19,10 +19,12 @@ class IngestService:
         db: Session,
         docs_client: GoogleDocsClient,
         vector_index: VectorIndex,
+        index_path: str | None = None,
     ) -> None:
         self.db = db
         self.docs_client = docs_client
         self.vector_index = vector_index
+        self.index_path = index_path
 
     def ingest(self, document_id: str, *, source_url: str) -> str:
         document_data = self.docs_client.fetch_document(document_id)
@@ -52,4 +54,9 @@ class IngestService:
         self.db.commit()
 
         self.vector_index.add(section_ids, embeddings)
+        
+        # Persist the index to disk if path is configured
+        if self.index_path:
+            self.vector_index.save(self.index_path)
+        
         return str(uuid.uuid4())

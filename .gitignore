@@ -39,5 +39,9 @@ htmlcov/
 # Cache
 *.cache
 
+# FAISS Index Data
+data/
+*.bin
+
 # Docker
 Dockerfile.local

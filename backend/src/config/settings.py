@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     lm_studio_base_url: str = "http://localhost:1234/v1"
     lm_studio_embedding_model: str = "text-embedding-nomic-embed-text-v1.5"
     lm_studio_timeout_seconds: float = 30.0
+    faiss_index_path: str = "data/faiss_index.bin"
 
 
 @lru_cache

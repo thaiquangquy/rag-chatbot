@@ -22,6 +22,8 @@ router = APIRouter(dependencies=[Depends(api_key_guard)])
 
 _settings = get_settings()
 _vector_index = VectorIndex(_settings.embedding_dimension)
+# Load existing index from disk if available
+_vector_index.load(_settings.faiss_index_path)
 
 
 def get_db() -> Iterator[Session]:

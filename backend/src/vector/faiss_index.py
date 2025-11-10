@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+import os
+from pathlib import Path
 from typing import Sequence
 
 import faiss
@@ -69,3 +72,61 @@ class VectorIndex:
         self.ids = list(self._embeddings.keys())
         matrix = np.stack([self._embeddings[idx] for idx in self.ids])
         self.index.add(np.ascontiguousarray(matrix, dtype="float32"))  # type: ignore[call-arg]
+
+    def save(self, path: str) -> None:
+        """Save FAISS index and ID mapping to disk.
+        
+        Args:
+            path: File path to save the index (e.g., 'data/faiss_index.bin')
+        """
+        # Create directory if it doesn't exist
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
+        
+        # Save FAISS index
+        faiss.write_index(self.index, path)
+        
+        # Save ID mapping and embeddings
+        metadata_path = path + ".meta"
+        metadata = {
+            "ids": self.ids,
+            "dimension": self.dimension,
+            "embeddings": {
+                key: value.tolist() for key, value in self._embeddings.items()
+            }
+        }
+        with open(metadata_path, "w") as f:
+            json.dump(metadata, f)
+
+    def load(self, path: str) -> None:
+        """Load FAISS index and ID mapping from disk.
+        
+        Args:
+            path: File path to load the index from (e.g., 'data/faiss_index.bin')
+        """
+        if not os.path.exists(path):
+            # If index doesn't exist, start with empty index
+            return
+        
+        # Load FAISS index
+        self.index = faiss.read_index(path)
+        
+        # Load ID mapping and embeddings
+        metadata_path = path + ".meta"
+        if not os.path.exists(metadata_path):
+            # Fallback: if no metadata, reconstruct empty
+            self.ids = []
+            self._embeddings = {}
+            return
+        
+        with open(metadata_path, "r") as f:
+            metadata = json.load(f)
+        
+        self.ids = metadata.get("ids", [])
+        self.dimension = metadata.get("dimension", self.dimension)
+        
+        # Reconstruct embeddings dict
+        embeddings_dict = metadata.get("embeddings", {})
+        self._embeddings = {
+            key: np.array(value, dtype="float32")
+            for key, value in embeddings_dict.items()
+        }

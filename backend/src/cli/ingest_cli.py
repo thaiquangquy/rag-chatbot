@@ -37,6 +37,8 @@ def build_dependencies() -> tuple[GoogleDocsClient, VectorIndex]:
     settings = get_settings()
     docs_client = GoogleDocsClient(settings.service_account_path)
     vector_index = VectorIndex(settings.embedding_dimension)
+    # Load existing index from disk if available
+    vector_index.load(settings.faiss_index_path)
     return docs_client, vector_index
 
 
@@ -54,14 +56,15 @@ def session_scope() -> Iterator[Session]:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
+    settings = get_settings()
     with session_scope() as session:
         docs_client, vector_index = build_dependencies()
         try:
             if args.command == "refresh":
-                service = RefreshService(session, docs_client, vector_index)
+                service = RefreshService(session, docs_client, vector_index, settings.faiss_index_path)
                 task_id = service.refresh(args.document_id, source_url=args.source, force=args.force)
             else:
-                service = IngestService(session, docs_client, vector_index)
+                service = IngestService(session, docs_client, vector_index, settings.faiss_index_path)
                 task_id = service.ingest(args.document_id, source_url=args.source)
         except NotImplementedError as exc:
             print("Google Docs client is not implemented yet:", exc, file=sys.stderr)

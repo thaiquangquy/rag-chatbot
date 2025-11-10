@@ -31,8 +31,6 @@ py -m backend.src.cli.ingest_cli ingest "1GtNxpX3NYntobPpp8j2YJyeecbKsbTrdtDBzUg
 4. Run the API server
 
 ```powershell
-uvicorn rag_chatbot.api:app --reload --port 8000
-
 uvicorn backend.src.api.main:app --reload --port 8080
 ```
 
